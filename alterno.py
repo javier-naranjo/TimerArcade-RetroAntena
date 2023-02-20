@@ -12,17 +12,16 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 insertada = False
 restante = 0
-unaVez = True
+falta = 0
 bloqueado = False
-time_start = 0
 actual = 0
-cont_monedas = 0
 minutos_moneda = int(config['RETROANTENA']['minutos'])
 teclas = {"1", "2", "a", "s", "d", "z", "x", "c", "u", "i", "o", "j", "k", "l", "enter", "up arrow", "left arrow", "right arrow", "down arrow", "b", "n", "m", "h"}
 
 ###################################################################
 def Hablar(txt):
     global actual
+    print(txt)
     if time.time() > actual: 
         try:
             pygame.mixer.music.unload()
@@ -65,18 +64,16 @@ def Desbloquear():
             keyboard.unhook_key(c)
     bloqueado = False
 
-###################################################################
+#################################5##################################
 def Hide():
     global insertada
-    global time_start
-    global cont_monedas
+    global falta
+    global restante
     insertada = True
-    time_start = time.time()
-    cont_monedas = cont_monedas + 1
     Desbloquear()
-    falta = int((((time_start + (cont_monedas * minutos_moneda * 60)) - time.time()) + 10) / 60)
-    Hablar("Te quedan " + str(falta) + " minutos   p")
-    print("Te quedan " + str(falta) + " minutos")
+    falta = minutos_moneda + (restante / 60)
+    restante = falta * 60
+    Hablar("Te quedan " + str(int(falta)) + " minutos con " + str(int((falta % 1) * 60)) + " segundos   p")
 
 ###################################################################
 def InsertaMoneda():
@@ -97,25 +94,24 @@ class Loop(Thread):
         global restante
         global minutos_moneda
         while True:
-            restante = (time_start + (cont_monedas * minutos_moneda * 60)) - time.time()
-            time.sleep(0.9)
+            if restante > 0:
+                restante = restante - 1
+            time.sleep(1)
+            print(int(restante))
             if int(restante) % 10 == 0 and int(restante) <= 60 and int(restante) > 0:
                 Hablar("Te quedan " + str(int(restante)) + " segundos   p")
             if insertada:
-                if time.time() > time_start + (cont_monedas * minutos_moneda * 60):
+                if restante <= 0:
                     insertada = False
                     Bloquear()
                     cont_monedas = 0
                     Hablar("Tiempo terminado   p")
-                else:
-                    print(int(restante))
             else:
                 continue
 
 ###################################################################
 Loop()
-#keyboard.add_hotkey('5', Hide)
-#keyboard.add_hotkey('esc', Cerrar)
+Hablar("Estás usando el temporizador Retro Antena   p")
 Bloquear()
 
 with KEY.Events() as events:
