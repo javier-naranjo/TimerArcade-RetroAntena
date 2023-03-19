@@ -104,8 +104,10 @@ def ComprobarVentana():
                 for coincidencia in emuladores:
                     if coincidencia in titulos:
                         win = gw.getWindowsWithTitle(coincidencia)[0]
-                        win.restore()
                         win.activate()
+                        win.maximize()
+                        win.restore()
+                        win.show()
                         ventanaOK = True
             break
 
@@ -140,20 +142,23 @@ class Loop(Thread):
                 continue
 
 ###################################################################
-Loop()
-Hablar("Estás usando el temporizador Retro Antena   p")
-Bloquear()
-ComprobarVentana()
-for x in range(8):
-    limpieza = "audio00" + str(x + 2) + ".wav"
-    print(limpieza)
-    if os.path.exists(limpieza):
+try:
+    Loop()
+    for x in range(8):
+        limpieza = "audio00" + str(x + 2) + ".wav"
+        print(limpieza)
+        if os.path.exists(limpieza):
             os.remove(limpieza)
+    Hablar("Estás usando el temporizador Retro Antena   p")
+    Bloquear()
+    ComprobarVentana()
 
-with KEY.Events() as events:
-    if termino:
-        for event in events:
-            if str(event) == "Press(key='5')":
-                Hide()
-            if str(event) == "Press(key='g')":
-                InsertaMoneda()
+    with KEY.Events() as events:
+        if termino:
+            for event in events:
+                if str(event) == "Press(key='5')":
+                    Hide()
+                if str(event) == "Press(key='g')":
+                    InsertaMoneda()
+except Exception as e:
+        print(e)

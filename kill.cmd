@@ -1,2 +1,3 @@
 TASKKILL /F /IM alterno.exe
-start /min C:\MULTIJOGOS\ADVMENU\joytokey\JoyToKey.exe -r "RASPBERRY PICO.cfg"
+TASKKILL /F /IM Fusion.exe
+start C:\MULTIJOGOS\ADVMENU\joytokey\JoyToKey.exe -r "RASPBERRY PICO.cfg"
