@@ -47,6 +47,10 @@ def Hablar(txt):
         actual = time.time()
 
 ###################################################################
+def Cerrar():
+    os._exit(0)
+
+###################################################################
 def Bloquear():
     global bloqueado
     global teclas
@@ -104,10 +108,14 @@ def ComprobarVentana():
                 for coincidencia in emuladores:
                     if coincidencia in titulos:
                         win = gw.getWindowsWithTitle(coincidencia)[0]
-                        win.activate()
-                        win.maximize()
-                        win.restore()
-                        win.show()
+                        if coincidencia == "Fusion":
+                            win.activate()
+                            win.maximize()
+                            win.restore()
+                            win.show()
+                        else:
+                            win.restore()
+                            win.activate()
                         ventanaOK = True
             break
 
@@ -160,5 +168,7 @@ try:
                     Hide()
                 if str(event) == "Press(key='g')":
                     InsertaMoneda()
+                if event.key == KEY.Key.esc:
+                    Cerrar()
 except Exception as e:
         print(e)
